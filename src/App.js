@@ -33,6 +33,7 @@ function App() {
 
     // update state according to logged in user
     onAuthStateChanged(auth, currentUser => {
+      console.log('onpageload');
       if(currentUser) {
         setUser({
           'user': currentUser,
@@ -52,7 +53,7 @@ function App() {
       updateProfile(auth.currentUser, {
         displayName: userName
       })
-      
+      console.log(currentUser)
       setUser({
         'user': currentUser,
         'displayName': currentUser.displayName,

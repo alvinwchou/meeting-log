@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import firebase, { auth } from "./firebase";
+import { auth } from "./firebase";
 import FormError from "./FormError";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
