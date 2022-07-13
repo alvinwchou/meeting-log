@@ -4,13 +4,13 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Home from './Home';
 import Welcome from './Welcome';
 import Navigation from './Navigation';
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Login from './Login';
 import Meetings from './Meetings';
 import Register from './Register';
 import { getDatabase, onValue, ref } from 'firebase/database';
 import firebase, { auth } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, updateProfile } from 'firebase/auth';
 
 
 
@@ -23,31 +23,49 @@ function App() {
   })
 
   useEffect(()=>{
-    const database = getDatabase(firebase);
-    const dbRef = ref(database);
-    onValue(dbRef, res => {
-      const data = res.val();
-      console.log(data)
-      setUser(data)
+    // const database = getDatabase(firebase);
+    // const dbRef = ref(database);
+    // onValue(dbRef, res => {
+    //   const data = res.val();
+    //   console.log(data)
+    //   setUser(data)
+    // })
+
+    // update state according to logged in user
+    onAuthStateChanged(auth, currentUser => {
+      if(currentUser) {
+        setUser({
+          'user': currentUser,
+          'displayName': currentUser.displayName,
+          'userID': currentUser.uid,
+        })
+      }
     })
   }, [])
+
+  let navigate = useNavigate()
 
   const registerUser = (userName) => {
     console.log('registerUser')
     onAuthStateChanged(auth, currentUser => { 
-      console.log(currentUser)
+      // add display to the authentication
+      updateProfile(auth.currentUser, {
+        displayName: userName
+      })
+      
       setUser({
         'user': currentUser,
-        'displayName': userName,
+        'displayName': currentUser.displayName,
         'userID': currentUser.uid,
       })
+      navigate('/meetings')
     })
   }
 
   return (
     <>
       <Navigation user={user} />
-      { user && <Welcome user={user.displayName} /> }
+      { user && <Welcome userName={user.displayName} /> }
 
       <Routes>
         <Route path='/' element={<Home user={user} />} />
