@@ -4,8 +4,8 @@ import FormError from "./FormError";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
-function Register() {
-    const [register, setRegister ] = useState({
+function Register({ registerUser }) {
+    const [registrationForm, setRegistrationForm ] = useState({
         displayName: '',
         email: '',
         passOne: '',
@@ -17,38 +17,39 @@ function Register() {
         const itemName = e.target.name;
         const itemValue = e.target.value;
 
-        setRegister({...register, [itemName]: itemValue })
+        setRegistrationForm({...registrationForm, [itemName]: itemValue })
     }
 
     useEffect(() => {
-        if (register.passOne !== register.passTwo) {
-            setRegister({ ...register, 'errorMessage': 'Passwords do not match' })
+        if (registrationForm.passOne !== registrationForm.passTwo) {
+            setRegistrationForm({ ...registrationForm, 'errorMessage': 'Passwords do not match' })
         } else {
-            setRegister({ ...register, 'errorMessage': null })
+            setRegistrationForm({ ...registrationForm, 'errorMessage': null })
         }
-    }, [register.passOne, register.passTwo])
+    }, [registrationForm.passOne, registrationForm.passTwo])
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const registrationInfo = {
-            displayName: register.displayName,
-            email: register.email,
-            password: register.passOne,
+            displayName: registrationForm.displayName,
+            email: registrationForm.email,
+            password: registrationForm.passOne,
         }
 
 
-            createUserWithEmailAndPassword(
-                auth,
-                registrationInfo.email,
-                registrationInfo.password
-            ).catch(error => {
-                if (error.message) {
-                    setRegister({ ...register, 'errorMessage': error.message })
-                } else {
-                    setRegister({ ...register, 'errorMessage': null })
-                }
+        createUserWithEmailAndPassword(
+            auth,
+            registrationInfo.email,
+            registrationInfo.password
+        ).then(() =>{
+            registerUser(registrationInfo.displayName);
+        }).catch(error => {
+            if (error.message) {
+                setRegistrationForm({ ...registrationForm, 'errorMessage': error.message })
+            } else {
+                setRegistrationForm({ ...registrationForm, 'errorMessage': null })
             }
-        )
+        })
     }
 
     return (
@@ -60,7 +61,7 @@ function Register() {
                             <div className="card-body">
                                 <h3 className="font-weight-light mb-3">Register</h3>
                                 <div className="form-row">
-                                    {register.errorMessage && <FormError theMessage={register.errorMessage} />}
+                                    {registrationForm.errorMessage && <FormError theMessage={registrationForm.errorMessage} />}
                                     <section className="col-sm-12 form-group">
                                         <label
                                             className="form-control-label sr-only"
@@ -75,7 +76,7 @@ function Register() {
                                             placeholder="Display Name"
                                             name="displayName"
                                             required
-                                            value={register.displayName}
+                                            value={registrationForm.displayName}
                                             onChange={handleChange}
                                         />
                                     </section>
@@ -94,7 +95,7 @@ function Register() {
                                         placeholder="Email Address"
                                         required
                                         name="email"
-                                        value={register.email}
+                                        value={registrationForm.email}
                                         onChange={handleChange}
                                     />
                                 </section>
@@ -105,7 +106,7 @@ function Register() {
                                             type="password"
                                             name="passOne"
                                             placeholder="Password"
-                                            value={register.passOne}
+                                            value={registrationForm.passOne}
                                             onChange={handleChange}
                                         />
                                     </section>
@@ -116,7 +117,7 @@ function Register() {
                                             required
                                             name="passTwo"
                                             placeholder="Repeat Password"
-                                            value={register.passTwo}
+                                            value={registrationForm.passTwo}
                                             onChange={handleChange}
                                         />
                                     </section>

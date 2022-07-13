@@ -9,13 +9,18 @@ import Login from './Login';
 import Meetings from './Meetings';
 import Register from './Register';
 import { getDatabase, onValue, ref } from 'firebase/database';
-import firebase from './firebase';
+import firebase, { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 
 
 function App() {
 
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState({
+    user: null,
+    displayName: null,
+    userID: null,
+  })
 
   useEffect(()=>{
     const database = getDatabase(firebase);
@@ -23,20 +28,32 @@ function App() {
     onValue(dbRef, res => {
       const data = res.val();
       console.log(data)
-      setUser(data.user)
+      setUser(data)
     })
   }, [])
+
+  const registerUser = (userName) => {
+    console.log('registerUser')
+    onAuthStateChanged(auth, currentUser => { 
+      console.log(currentUser)
+      setUser({
+        'user': currentUser,
+        'displayName': userName,
+        'userID': currentUser.uid,
+      })
+    })
+  }
 
   return (
     <>
       <Navigation user={user} />
-      { user && <Welcome user={user} /> }
+      { user && <Welcome user={user.displayName} /> }
 
       <Routes>
         <Route path='/' element={<Home user={user} />} />
         <Route path='/login' element={<Login />} />
         <Route path='/meetings' element={<Meetings />} />
-        <Route path='/register' element={<Register />} />
+        <Route path='/register' element={<Register registerUser={registerUser} />} />
       </Routes>
       
     </>
