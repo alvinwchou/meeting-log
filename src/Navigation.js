@@ -1,7 +1,7 @@
 import { FaUsers } from "react-icons/fa"
 import { Link } from "react-router-dom"
 
-function Navigation({ user }) {
+function Navigation({ user, logoutUser }) {
     return (
         <nav className="site-nav family-sans navbar navbar-expand bg-primary navbar-dark higher">
             <div className="container-fluid">
@@ -15,7 +15,7 @@ function Navigation({ user }) {
                             <Link to="/meetings" className="nav-item nav-link">
                                 meetings
                             </Link>
-                            <Link to="/login" className="nav-item nav-link">
+                            <Link to="/login" className="nav-item nav-link" onClick={e => logoutUser(e)}>
                                 log out
                             </Link>
                         </>
