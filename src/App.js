@@ -3,6 +3,7 @@ import { useState } from "react"
 import 'bootstrap/dist/css/bootstrap.css'
 import Home from './Home';
 import Welcome from './Welcome';
+import Navigation from './Navigation';
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <>
+      <Navigation user={user} />
       { user && <Welcome user={user} /> }
       <Home user={user} />
     </>
