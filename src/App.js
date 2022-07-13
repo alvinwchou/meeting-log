@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import 'bootstrap/dist/css/bootstrap.css'
 import Home from './Home';
 import Welcome from './Welcome';
@@ -8,13 +8,24 @@ import { Routes, Route } from 'react-router-dom'
 import Login from './Login';
 import Meetings from './Meetings';
 import Register from './Register';
+import { getDatabase, onValue, ref } from 'firebase/database';
+import firebase from './firebase';
 
 
 
 function App() {
 
-  // const [user, setUser] = useState(null)
-  const [user, setUser] = useState('Ray')
+  const [user, setUser] = useState(null)
+
+  useEffect(()=>{
+    const database = getDatabase(firebase);
+    const dbRef = ref(database);
+    onValue(dbRef, res => {
+      const data = res.val();
+      console.log(data)
+      setUser(data.user)
+    })
+  }, [])
 
   return (
     <>

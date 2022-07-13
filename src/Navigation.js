@@ -12,19 +12,19 @@ function Navigation({ user }) {
                 <div className="navbar-nav ml-auto">
                     {user ?
                         <>
-                            <Link className="nav-item nav-link" to="/meetings">
+                            <Link to="/meetings" className="nav-item nav-link">
                                 meetings
                             </Link>
-                            <Link className="nav-item nav-link" to="/login">
+                            <Link to="/login" className="nav-item nav-link">
                                 log out
                             </Link>
                         </>
                     :
                         <>
-                            <Link className="nav-item nav-link" to="/login">
+                            <Link to="/login" className="nav-item nav-link">
                                 log in
                             </Link>
-                            <Link className="nav-item nav-link" to="/register">
+                            <Link to="/register" className="nav-item nav-link">
                                 register
                             </Link>
                         </>
