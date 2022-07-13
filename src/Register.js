@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import firebase, { auth } from "./firebase";
 import FormError from "./FormError";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 function Register() {
@@ -12,7 +14,6 @@ function Register() {
     });
 
     const handleChange = (e) => {
-        e.preventDefault();
         const itemName = e.target.name;
         const itemValue = e.target.value;
 
@@ -20,18 +21,38 @@ function Register() {
     }
 
     useEffect(() => {
-        console.log('password')
         if (register.passOne !== register.passTwo) {
-            console.log('doesnt match')
             setRegister({ ...register, 'errorMessage': 'Passwords do not match' })
         } else {
-            console.log('match')
             setRegister({ ...register, 'errorMessage': null })
         }
-    }, [register])
+    }, [register.passOne, register.passTwo])
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const registrationInfo = {
+            displayName: register.displayName,
+            email: register.email,
+            password: register.passOne,
+        }
+
+
+            createUserWithEmailAndPassword(
+                auth,
+                registrationInfo.email,
+                registrationInfo.password
+            ).catch(error => {
+                if (error.message) {
+                    setRegister({ ...register, 'errorMessage': error.message })
+                } else {
+                    setRegister({ ...register, 'errorMessage': null })
+                }
+            }
+        )
+    }
 
     return (
-        <form className="mt-3">
+        <form className="mt-3" onSubmit={handleSubmit}>
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-8">
