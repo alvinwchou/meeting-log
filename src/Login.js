@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { auth } from "./firebase";
 import FormError from "./FormError";
 import { signInWithEmailAndPassword } from 'firebase/auth';

@@ -8,9 +8,10 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import Login from './Login';
 import Meetings from './Meetings';
 import Register from './Register';
-import { getDatabase, onValue, ref } from 'firebase/database';
-import firebase, { auth } from './firebase';
+import { auth } from './firebase';
 import { onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
+import firebase from './firebase';
+import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
 
 
 
@@ -21,6 +22,23 @@ function App() {
     displayName: null,
     userID: null,
   })
+  
+    const registerUser = (userName) => {
+      console.log('registerUser')
+      onAuthStateChanged(auth, currentUser => { 
+        // add display to the authentication
+        updateProfile(auth.currentUser, {
+          displayName: userName
+        })
+        console.log(currentUser)
+        setUser({
+          'user': currentUser,
+          'displayName': currentUser.displayName,
+          'userID': currentUser.uid,
+        })
+        navigate('/meetings')
+      })
+    }
 
   useEffect(()=>{
     // const database = getDatabase(firebase);
@@ -42,26 +60,9 @@ function App() {
         })
       }
     })
-  }, [])
+  }, [registerUser])
 
   let navigate = useNavigate()
-
-  const registerUser = (userName) => {
-    console.log('registerUser')
-    onAuthStateChanged(auth, currentUser => { 
-      // add display to the authentication
-      updateProfile(auth.currentUser, {
-        displayName: userName
-      })
-      console.log(currentUser)
-      setUser({
-        'user': currentUser,
-        'displayName': currentUser.displayName,
-        'userID': currentUser.uid,
-      })
-      navigate('/meetings')
-    })
-  }
 
   const logoutUser = (e) => {
     e.preventDefault()
@@ -75,7 +76,11 @@ function App() {
     });
   }
 
-  console.log('ererr', user)
+  const addMeeting = (meetingName) => {
+    const database = getDatabase(firebase);
+    const dbRef = ref(database, `meetings/${user.user.uid}`)
+    push(dbRef, {'meetingName': meetingName})
+  }
 
   return (
     <>
@@ -85,7 +90,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home user={user.user} />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/meetings' element={<Meetings />} />
+        <Route path='/meetings' element={<Meetings addMeeting={addMeeting}/>} />
         <Route path='/register' element={<Register registerUser={registerUser} />} />
       </Routes>
       
