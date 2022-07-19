@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getDatabase, onValue, push, ref } from "firebase/database";
 import AttendeesList from "./AttendeesList";
 
-function Attendees() {
+function Attendees({ adminUser }) {
     const [attendees, setAttendees] = useState([]);
 
     const { userId: userId } = useParams();
@@ -41,7 +41,11 @@ function Attendees() {
                     </h1>
                 </div>
             </div>
-            <AttendeesList attendeesList={attendees} userId={userId}/>
+            <AttendeesList
+                attendeesList={attendees}
+                userId={userId}
+                adminUser={adminUser}
+                meetingId={meetingId}/>
         </div>
     )
 }
