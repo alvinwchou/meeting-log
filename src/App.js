@@ -11,7 +11,7 @@ import Register from './Register';
 import { auth } from './firebase';
 import { onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
 import firebase from './firebase';
-import { getDatabase, ref, onValue, push, remove } from 'firebase/database';
+import { getDatabase, ref, onValue, push } from 'firebase/database';
 
 
 
@@ -23,23 +23,6 @@ function App() {
     userID: null,
   })
   
-    const registerUser = (userName) => {
-      console.log('registerUser')
-      onAuthStateChanged(auth, currentUser => { 
-        // add display to the authentication
-        updateProfile(auth.currentUser, {
-          displayName: userName
-        })
-        console.log(currentUser)
-        setUser({
-          'user': currentUser,
-          'displayName': currentUser.displayName,
-          'userID': currentUser.uid,
-        })
-        navigate('/meetings')
-      })
-    }
-
   useEffect(()=>{
     // const database = getDatabase(firebase);
     // const dbRef = ref(database);
@@ -48,22 +31,63 @@ function App() {
     //   console.log(data)
     //   setUser(data)
     // })
-
+    
     // update state according to logged in user
     onAuthStateChanged(auth, currentUser => {
       console.log('onpageload');
       if(currentUser) {
+        // setUser({
+        //   'user': currentUser,
+        //   'displayName': currentUser.displayName,
+        //   'userID': currentUser.uid,
+        // })
+
+        const database = getDatabase(firebase);
+        const dbRef = ref(database, `meetings/${currentUser.uid}`);
+        onValue(dbRef, res => {
+          const data = res.val();
+          let meetingsList = [];
+
+          for(let item in data) {
+            meetingsList.push({
+              meetingId: item,
+              meetingName: data[item].meetingName
+            })
+          }
+
+          setUser({
+            'user': currentUser,
+            'displayName': currentUser.displayName,
+            'userID': currentUser.uid,
+            'meetings': meetingsList,
+            'howManyMeetings': meetingsList.length
+          })
+        })
+      } else {
+        setUser({...user, 'user': null})
+      }
+    })
+  }, [])
+  
+  let navigate = useNavigate()
+  
+  const registerUser = (userName) => {
+    console.log('registerUser')
+    onAuthStateChanged(auth, currentUser => { 
+      // add display to the authentication
+      updateProfile(auth.currentUser, {
+        displayName: userName
+      }).then( () => {
         setUser({
           'user': currentUser,
           'displayName': currentUser.displayName,
           'userID': currentUser.uid,
         })
-      }
+      })
+      navigate('/meetings')
     })
-  }, [registerUser])
-
-  let navigate = useNavigate()
-
+  }
+    console.log('userState', user)
   const logoutUser = (e) => {
     e.preventDefault()
     setUser({
