@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MeetingsList from "./MeetingList";
 
-function Meetings({ addMeeting, meetings }) {
+function Meetings({ addMeeting, meetings, userId }) {
     const [meetingName, setMeetingName] = useState('');
 
     const handleChange = (e) => {
@@ -60,7 +60,7 @@ function Meetings({ addMeeting, meetings }) {
                         }
                         {meetings && 
                             <div className="list-group list-group-flush">
-                                <MeetingsList meetings={meetings} />
+                                <MeetingsList meetings={meetings} userId={userId}/>
                             </div>
                         }
                     </div>
