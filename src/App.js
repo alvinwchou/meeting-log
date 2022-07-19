@@ -12,6 +12,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged, signOut, updateProfile } from 'firebase/auth';
 import firebase from './firebase';
 import { getDatabase, ref, onValue, push } from 'firebase/database';
+import CheckIn from './CheckIn';
 
 
 
@@ -119,6 +120,7 @@ function App() {
           meetings={user.meetings}
           userId={user.userID} />} />
         <Route path='/register' element={<Register registerUser={registerUser} />} />
+        <Route path='/checkin/:userId/:meetingId' element={<CheckIn />} />
       </Routes>
       
     </>

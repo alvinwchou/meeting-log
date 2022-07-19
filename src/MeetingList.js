@@ -1,17 +1,19 @@
 import { getDatabase, ref, remove } from 'firebase/database'
 import firebase from './firebase';
 import {GoTrashcan} from 'react-icons/go'
+import { useNavigate } from 'react-router-dom';
+import { FaLink } from 'react-icons/fa';
 
 function MeetingsList({ meetings, userId }) {
     
-    const deleteMeeting = (e, whichMeeting) => {
-        e.preventDefault();
+    const deleteMeeting = (whichMeeting) => {
         const database = getDatabase(firebase);
         const dbRef = ref(database, `meetings/${userId}/${whichMeeting}`);
 
         remove(dbRef);
     }
 
+    let navigate = useNavigate()
     return (
         <div className="text-center mt-4">
             <p>meeting</p>
@@ -22,8 +24,14 @@ function MeetingsList({ meetings, userId }) {
                         <section className="btn-group align-self-center" role=''>
                             <button className="btn btn-sm btn-outline-secondary"
                             title="Delete Meeting"
-                            onClick={e => deleteMeeting(e, meeting.meetingId)}>
+                            onClick={() => deleteMeeting(meeting.meetingId)}>
                                 <GoTrashcan />
+                            </button>
+
+                            <button className="btn btn-sm btn-outline-secondary"
+                            title="Check In"
+                            onClick={() => navigate(`/checkin/${userId}/${meeting.meetingId}`)}>
+                                <FaLink />
                             </button>
                         </section>
 
