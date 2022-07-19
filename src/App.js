@@ -114,7 +114,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home user={user.user} />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/meetings' element={<Meetings addMeeting={addMeeting}/>} />
+        <Route path='/meetings' element={<Meetings addMeeting={addMeeting} meetings={user.meetings} />} />
         <Route path='/register' element={<Register registerUser={registerUser} />} />
       </Routes>
       

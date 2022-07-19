@@ -1,6 +1,7 @@
 import { useState } from "react";
+import MeetingsList from "./MeetingList";
 
-function Meetings({ addMeeting }) {
+function Meetings({ addMeeting, meetings }) {
     const [meetingName, setMeetingName] = useState('');
 
     const handleChange = (e) => {
@@ -48,6 +49,20 @@ function Meetings({ addMeeting }) {
                                 </div>
                             </form>
                         </div>
+                    </div>
+                </div>
+                <div className="col-11 col-md-6 text-center">
+                    <div className="card border-top-0 rounded-0">
+                        {meetings && meetings.length &&
+                            <div className="card-body py-2">
+                                <h4 className="card-title font-weight-light m-0"> Your Meeting</h4>
+                            </div>
+                        }
+                        {meetings && 
+                            <div className="list-group list-group-flush">
+                                <MeetingsList meetings={meetings} />
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
