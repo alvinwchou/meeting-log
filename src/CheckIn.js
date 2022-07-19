@@ -1,10 +1,10 @@
 import { useState } from "react";
 import firebase from "./firebase";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getDatabase, push, ref } from "firebase/database";
 
 function CheckIn() {
-    const [checkinForm, setCheckinForm] = useState({
+    const [checkInForm, setCheckInForm] = useState({
         displayName: '',
         email: '',
     });
@@ -16,8 +16,10 @@ function CheckIn() {
         const itemName = e.target.name;
         const itemValue = e.target.value;
 
-        setCheckinForm({ ...checkinForm, [itemName]: itemValue })
+        setCheckInForm({ ...checkInForm, [itemName]: itemValue })
     }
+
+    let navigation = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -26,9 +28,11 @@ function CheckIn() {
         const dbRef = ref(database, `meetings/${userId}/${meetingId}/attendees`)
 
         push(dbRef, {
-            'attendeeName': checkinForm.displayName,
-            'attendeeEmail': checkinForm.email
+            'attendeeName': checkInForm.displayName,
+            'attendeeEmail': checkInForm.email
         })
+
+        navigation(`/attendees/${userId}/${meetingId}`)
     }
 
 
@@ -54,7 +58,7 @@ function CheckIn() {
                                         id="displayName"
                                         name="displayName"
                                         placeholder="Name"
-                                        value={checkinForm.displayName}
+                                        value={checkInForm.displayName}
                                         onChange={handleChange}
                                     />
                                 </section>
@@ -72,7 +76,7 @@ function CheckIn() {
                                         id="email"
                                         name="email"
                                         placeholder="Email"
-                                        value={checkinForm.email}
+                                        value={checkInForm.email}
                                         onChange={handleChange}
                                     />
                                 </section>

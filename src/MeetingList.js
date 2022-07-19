@@ -1,6 +1,6 @@
 import { getDatabase, ref, remove } from 'firebase/database'
 import firebase from './firebase';
-import {GoTrashcan} from 'react-icons/go'
+import {GoListUnordered, GoTrashcan} from 'react-icons/go'
 import { useNavigate } from 'react-router-dom';
 import { FaLink } from 'react-icons/fa';
 
@@ -30,8 +30,14 @@ function MeetingsList({ meetings, userId }) {
 
                             <button className="btn btn-sm btn-outline-secondary"
                             title="Check In"
-                            onClick={() => navigate(`/checkin/${userId}/${meeting.meetingId}`)}>
+                            onClick={() => navigate(`/checkIn/${userId}/${meeting.meetingId}`)}>
                                 <FaLink />
+                            </button>
+
+                            <button className="btn btn-sm btn-outline-secondary"
+                                title="Attendees List"
+                                onClick={() => navigate(`/attendees/${userId}/${meeting.meetingId}`)}>
+                                <GoListUnordered />
                             </button>
                         </section>
 
