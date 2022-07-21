@@ -16,7 +16,6 @@ function MeetingsList({ meetings, userId }) {
     let navigate = useNavigate()
     return (
         <div className="text-center mt-4">
-            <p>meeting</p>
             {meetings.map(meeting => {
                 return (
                     <div className='list-group-item d-flex' key={meeting.meetingId}>

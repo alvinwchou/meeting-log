@@ -23,7 +23,8 @@ function Attendees({ adminUser }) {
                 attendeesList.push({
                     attendeeId: item,
                     attendeeName: data[item].attendeeName,
-                    attendeeEmail: data[item].attendeeEmail
+                    attendeeEmail: data[item].attendeeEmail,
+                    star: data[item].star
                 })
             }
 

@@ -1,5 +1,5 @@
-import { getDatabase, ref, remove } from "firebase/database";
-import { GoTrashcan } from "react-icons/go";
+import { getDatabase, ref, remove, set } from "firebase/database";
+import { GoMail, GoStar, GoTrashcan } from "react-icons/go";
 import firebase from "./firebase";
 
 
@@ -8,9 +8,21 @@ function AttendeesList({ attendeesList, userId, adminUser, meetingId }) {
 
     const deleteAttendee = (whichMeeting, whichAttendee) => {
         const database = getDatabase(firebase);
-        const dbRef = ref(database, `meetings/${userId}/${whichMeeting}/attendees/${whichAttendee}`)
+        const dbRef = ref(database, `meetings/${adminUser}/${whichMeeting}/attendees/${whichAttendee}`)
 
         remove(dbRef);
+    }
+
+    const toggleStar = (star, whichMeeting, whichAttendee) => {
+
+        const database = getDatabase(firebase);
+        const dbRef = ref(database, `meetings/${adminUser}/${whichMeeting}/attendees/${whichAttendee}/star`)
+
+        if (star === undefined) {
+            set(dbRef, true)
+        } else {
+            set(dbRef, !star)
+        }
     }
 
     return (
@@ -28,7 +40,14 @@ function AttendeesList({ attendeesList, userId, adminUser, meetingId }) {
                                 {admin && (
                                     <div className="btn-group pr-2">
                                         <button
-                                            className="btn btn-sn btn-outline-secondary"
+                                            className={"btn btn-sm " + (attendee.star ? 'btn-info' : 'btn-outline-secondary')}
+                                            title="Give user a star"
+                                            onClick={() => toggleStar(attendee.star, meetingId, attendee.attendeeId)}
+                                        >
+                                            <GoStar />
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-outline-secondary"
                                             title="Delete Attendee"
                                             onClick={() => deleteAttendee(meetingId, attendee.attendeeId)}
                                         >

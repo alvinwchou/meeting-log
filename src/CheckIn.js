@@ -29,7 +29,8 @@ function CheckIn() {
 
         push(dbRef, {
             'attendeeName': checkInForm.displayName,
-            'attendeeEmail': checkInForm.email
+            'attendeeEmail': checkInForm.email,
+            'star': false
         })
 
         navigation(`/attendees/${userId}/${meetingId}`)
