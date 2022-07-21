@@ -46,6 +46,9 @@ function AttendeesList({ attendeesList, userId, adminUser, meetingId }) {
                                         >
                                             <GoStar />
                                         </button>
+                                        <a href={`mailto:${attendee.attendeeEmail}`} className='btn btn-sm btn-outline-secondary' title='Mail attendee'>
+                                            <GoMail />
+                                        </a>
                                         <button
                                             className="btn btn-sm btn-outline-secondary"
                                             title="Delete Attendee"
