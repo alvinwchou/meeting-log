@@ -1,11 +1,12 @@
 import { useState } from "react";
 import firebase from "./firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { getDatabase, onValue, push, ref } from "firebase/database";
+import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import AttendeesList from "./AttendeesList";
 
 function Attendees({ adminUser }) {
     const [attendees, setAttendees] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('')
 
     const { userId: userId } = useParams();
     const { meetingId: meetingId } = useParams();
@@ -32,6 +33,11 @@ function Attendees({ adminUser }) {
         })
     }, [])
 
+    const handleChange = (e) => {
+        setSearchQuery(e.target.value)
+    }
+
+    const filteredAttendees = attendees.filter(attendee => (attendee.attendeeName.toLowerCase().match(searchQuery.toLowerCase())))
 
     return (
         <div className="container mt-4">
@@ -40,10 +46,22 @@ function Attendees({ adminUser }) {
                     <h1 className="font-weight-light text-center">
                         Attendees
                     </h1>
+                    <div className="card bg-light mb-4">
+                        <div className="card-body text-center">
+                            <input
+                                type="text"
+                                name="searchQuery"
+                                placeholder="Search Attendees"
+                                className="form-control"
+                                value={searchQuery}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
             <AttendeesList
-                attendeesList={attendees}
+                attendeesList={filteredAttendees}
                 userId={userId}
                 adminUser={adminUser}
                 meetingId={meetingId}/>
