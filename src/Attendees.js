@@ -3,7 +3,7 @@ import firebase from "./firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import AttendeesList from "./AttendeesList";
-import { FaUndo } from "react-icons/fa";
+import { FaRandom, FaUndo } from "react-icons/fa";
 
 function Attendees({ adminUser }) {
     const [attendees, setAttendees] = useState([]);
@@ -42,6 +42,12 @@ function Attendees({ adminUser }) {
         setSearchQuery('');
     }
 
+    const chooseRandom = () => {
+        const randomAttendee = Math.floor(Math.random() * attendees.length)
+        resetQuery()
+        setSearchQuery(attendees[randomAttendee].attendeeName)
+    }
+
     const filteredAttendees = attendees.filter(attendee => (attendee.attendeeName.toLowerCase().match(searchQuery.toLowerCase())))
 
     return (
@@ -63,6 +69,9 @@ function Attendees({ adminUser }) {
                                     onChange={handleChange}
                                 />
                                 <div className="input-group-append">
+                                    <button className="btn btn-sm btn-outline-info" title="Pick a random attendee" onClick={chooseRandom}>
+                                        <FaRandom />
+                                    </button>
                                     <button className="btn btn-sm btn-outline-info" title="Reset search" onClick={resetQuery}>
                                         <FaUndo />
                                     </button>
