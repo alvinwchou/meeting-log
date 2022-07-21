@@ -3,6 +3,7 @@ import firebase from "./firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import AttendeesList from "./AttendeesList";
+import { FaUndo } from "react-icons/fa";
 
 function Attendees({ adminUser }) {
     const [attendees, setAttendees] = useState([]);
@@ -12,7 +13,7 @@ function Attendees({ adminUser }) {
     const { meetingId: meetingId } = useParams();
 
 
-    useState(() =>{
+    useState(() => {
         const database = getDatabase(firebase);
         const dbRef = ref(database, `meetings/${userId}/${meetingId}/attendees`)
 
@@ -20,7 +21,7 @@ function Attendees({ adminUser }) {
             const data = res.val();
             let attendeesList = [];
 
-            for(let item in data) {
+            for (let item in data) {
                 attendeesList.push({
                     attendeeId: item,
                     attendeeName: data[item].attendeeName,
@@ -37,6 +38,10 @@ function Attendees({ adminUser }) {
         setSearchQuery(e.target.value)
     }
 
+    const resetQuery = () => {
+        setSearchQuery('');
+    }
+
     const filteredAttendees = attendees.filter(attendee => (attendee.attendeeName.toLowerCase().match(searchQuery.toLowerCase())))
 
     return (
@@ -48,14 +53,21 @@ function Attendees({ adminUser }) {
                     </h1>
                     <div className="card bg-light mb-4">
                         <div className="card-body text-center">
-                            <input
-                                type="text"
-                                name="searchQuery"
-                                placeholder="Search Attendees"
-                                className="form-control"
-                                value={searchQuery}
-                                onChange={handleChange}
-                            />
+                            <div className="input-group input-group-large">
+                                <input
+                                    type="text"
+                                    name="searchQuery"
+                                    placeholder="Search Attendees"
+                                    className="form-control"
+                                    value={searchQuery}
+                                    onChange={handleChange}
+                                />
+                                <div className="input-group-append">
+                                    <button className="btn btn-sm btn-outline-info" title="Reset search" onClick={resetQuery}>
+                                        <FaUndo />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +76,7 @@ function Attendees({ adminUser }) {
                 attendeesList={filteredAttendees}
                 userId={userId}
                 adminUser={adminUser}
-                meetingId={meetingId}/>
+                meetingId={meetingId} />
         </div>
     )
 }
